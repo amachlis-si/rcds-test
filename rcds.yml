@@ -1,0 +1,32 @@
+docker:
+  image:
+    prefix: gcr.io/iih-creidts/challs
+
+flagFormat: flag\{[a-zA-Z0-9_,.'?!@$<>*:-]*\}
+
+defaults:
+  containers:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 150Mi
+      requests:
+        cpu: 10m
+        memory: 30Mi
+
+backends:
+- resolve: k8s
+  options:
+    kubeContext: gke_project_zone_cluster
+    domain: challs.rctf.burturt.com
+    annotations:
+      ingress:
+        traefik.ingress.kubernetes.io/router.tls: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: "ingress-nocontenttype@kubernetescrd"
+- resolve: rctf
+  options:
+    url: http://rctf.burturt.com
+    token: 
+    scoring:
+      minPoints: 100
+      maxPoints: 500
